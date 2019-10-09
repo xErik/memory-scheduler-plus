@@ -1,6 +1,6 @@
 {
   "name": "memory-scheduler-plus",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Schedules records to facilitate memorization.",
   "main": "index.js",
   "scripts": {
