@@ -38,13 +38,10 @@ record = ms.getNextRecord(intConfidence, record);
   correctInRow: 1 }
 ```
 
-| Attribute                | Description                                                                                                                                                                             |
-| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `id<string>`             | Your custom id referring to your custom item. It is just a marker used by you.                                                                                                          |
-| `intervalDate<Date>`     | At this UTC-date the user is to be tested with your custom item. This date is to be used by you.                                                                                        |
-| `intervalIndex<int>`     | Internal usage.                                                                                                                                                                         |
-| `intervalMaxedOut<bool>` | Has the user learned your custom item successfully? To be used by you. (In this case, the `intervalIndex` is set to the max interval, just to refresh the users's memory now and then.) |
-| `correctInRow<int>`      | How many successful answers have been given in a row by the user. To be used by you for ... fancy motivation stuff?                                                                     |
+- `id<string>`: Your custom id referring to your custom item. It is just a marker used by you.
+- `intervalDate<Date>`:  At this UTC-date the user is to be tested with your custom item. This date is to be used by you. _ `intervalIndex<int>` Internal usage.
+- `intervalMaxedOut<bool>`:  Has the user learned your custom item successfully? To be used by you. (In this case, the `intervalIndex` is set to the max interval, just to refresh the users's memory now and then.)
+- `correctInRow<int>`: How many successful answers have been given in a row by the user. To be used by you for ... fancy motivation stuff?
 
 ## Usage
 
@@ -67,14 +64,6 @@ const ms = new MemorySchedulerPlus();
 
 let record = ms.getInitialRecord("myUniqueItemId");
 
-// console.log(record)
-//
-// { id: 'myUniqueItemId',
-//   intervalDate: 2019-10-08T10:00:07.329Z,
-//   intervalIndex: 0,
-//   intervalMaxedOut: false,
-//   correctInRow: 0 }
-
 /**
  * 2. The user sets a confidence level.
  *
@@ -88,14 +77,6 @@ let intConfidence = 2;
 
 record = ms.getNextRecord(intConfidence, record);
 
-// console.log(record)
-//
-// { id: 'myUniqueItemId',
-//   intervalDate: 2019-10-10T10:00:07.343Z,
-//   intervalIndex: 1,
-//   intervalMaxedOut: false,
-//   correctInRow: 1 }
-
 /**
  * 3. The user sets a confidence level.
  *
@@ -105,14 +86,6 @@ record = ms.getNextRecord(intConfidence, record);
 intConfidence = 1;
 
 record = ms.getNextRecord(intConfidence, record);
-
-// console.log(record)
-//
-// { id: 'myUniqueItemId',
-//   intervalDate: 2019-10-10T10:03:43.045Z,
-//   intervalIndex: 0,
-//   intervalMaxedOut: false,
-//   correctInRow: 0 }
 
 /**
  * 4. The user sets a confidence level.
