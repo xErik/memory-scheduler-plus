@@ -2,15 +2,19 @@
 
 Memory Scheduler Plus is a scheduling service used to memorize items.
 
-You provide with a custom-ID of the item you want the user to remember.
+You provide a custom-ID of the item you want the user to remember.
 
-The user provide a confidence rating regarding his memorization of said item.
+The user provides a confidence rating regarding the memorization of said item.
 
-Based in the user's confidence the next review of said item is scheduled.
+Based in the user's confidence the next review of said item is scheduled as an UTC-Date-Object.
 
-If the user is confident (or successful) the review iteration will increase until it is maxed out. In this case subsequent reviews will be scheduled with the specified max interval.
+If the user is confident (or successful) the review iteration will increase until it is maxed out. In this case, subsequent reviews will be scheduled with the specified max interval.
 
 If the user is not confident (or not successful) the review iteration will decrease.
+
+You may configure the review interval however you like: months, hours, minutes, etc.
+
+You may configure the confidence-levels the user may select which in turn impact the following review interval.
 
 ## Installation
 
@@ -20,23 +24,11 @@ npm i memory-scheduler-plus --save
 
 ## Data structure
 
-The function
+The function `getNextRecord` expects and returns JSON-Objects of the same structure. Both objects do not share a reference but are independent.
 
 ```javascript
 record = ms.getNextRecord(intConfidence, record);
 ```
-
-expects and returns JSON-Objects of the same structure. Both objects do not share a reference but are independent.
-
-`id`: Your custom id referring to your custom item
-
-`intervalDate`: At this UTC-date the user is to be tested with your custom item. The user then answers with a confidence level (typically: 0,1,2).
-
-`intervalIndex`: Internal usage.
-
-`intervalMaxedOut`: Has the user learned your custom item successfully?
-
-`correctInRow`: How many successful answers have been given in a row by the user (just nice to have).
 
 ```javascript
 { id: 'myUniqueItemId',
@@ -46,27 +38,24 @@ expects and returns JSON-Objects of the same structure. Both objects do not shar
   correctInRow: 1 }
 ```
 
-## Usage
+| Attribute                | Description                                                                                                                                                                             |
+| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id<string>`             | Your custom id referring to your custom item. It is just a marker used by you.                                                                                                          |
+| `intervalDate<Date>`     | At this UTC-date the user is to be tested with your custom item. This date is to be used by you.                                                                                        |
+| `intervalIndex<int>`     | Internal usage.                                                                                                                                                                         |
+| `intervalMaxedOut<bool>` | Has the user learned your custom item successfully? To be used by you. (In this case, the `intervalIndex` is set to the max interval, just to refresh the users's memory now and then.) |
+| `correctInRow<int>`      | How many successful answers have been given in a row by the user. To be used by you for ... fancy motivation stuff?                                                                     |
 
-The progress internally is mapped by a confidence-array which dictates which value from an interval-array is selected.
+## Usage
 
 Success (or confidence) leads to increasing testing gaps. The next test will happen in the far future.
 
 Failure (or non-confidence) leads to decreasing testing gaps. The next test will happen in the near future.
 
-Once the last interval-array item has been reached, the record is marked as learned via the boolean attribute `intervalMaxedOut = true`.
-
-```
-// Relative days between session
-arrIntervals = [1, 2, 3, 8, 17],
-// [-3, -1, 1] maps to NO, UNSURE, YES
-//
-// Decrements and increments index of arrIntervals
-arrConfidence = [-3, -1, 1]
-```
+**How To Use**
 
 ```javascript
-let MemorySchedulerPlus = require('memory-scheduler-plus')
+let MemorySchedulerPlus = require("memory-scheduler-plus");
 
 /**
  * 1. Create an initial record with your custom ID.
@@ -74,10 +63,9 @@ let MemorySchedulerPlus = require('memory-scheduler-plus')
  * The custom ID should refer to the item you want to test.
  */
 
+const ms = new MemorySchedulerPlus();
 
-const ms = new MemorySchedulerPlus()
-
-let record = ms.getInitialRecord('myUniqueItemId')
+let record = ms.getInitialRecord("myUniqueItemId");
 
 // console.log(record)
 //
@@ -135,12 +123,11 @@ record = ms.getNextRecord(intConfidence, record);
 intConfidence = 0;
 
 record = ms.getNextRecord(intConfidence, record);
-
 ```
 
 ### Advanced Usage
 
-The default constructor is given below, its values will be used if not set by you.
+The default constructor is given below, it's values will be used if not set by you.
 
 Internally, the [moment](https://momentjs.com/docs/#/manipulating/add/) package is used.
 
@@ -163,29 +150,44 @@ class MemorySchedulerPlus {
 
 You may define iterations as well as confidence-levels (that select the next iteration) as you like:
 
-* The constructor parameter `arrIntervals` follows the moment Object-definition to define the intervals.
-* The constructor parameter `arrConfidence` defines which following interval from `arrIntervals` is applied - by stepping backward or forward.
+- The constructor parameter `arrIntervals` follows the `moment` Object-definition to define the intervals. The values of `arrIntervals` must increase!
+- The constructor parameter `arrConfidence` defines which following interval from `arrIntervals` is applied - by stepping backward or forward. The values of `arrConfidence` must increase!
 
-**Example**
+**Example Using Hours**
 
-* Instead of using days as intervals you may use _hours_.
-* The default confidence-configuration to select the next interval is still used:
-  * confidence-level-index-0 = FAIL = move-back-3
-  * confidence-level-index-1 = UNSURE = move-back-1
-  * confidence-level-index-2 = CONFIDENT = move-ahead-1
+- Instead of using days as intervals you may use others like _minutes_, _hours_, _months_ and mix them.
+- The default confidence-configuration to select the next interval is still used:
+  - confidence-level-index-0 = FAIL = move-back-3
+  - confidence-level-index-1 = UNSURE = move-back-1
+  - confidence-level-index-2 = CONFIDENT = move-ahead-1
 
 ```javascript
-let MemorySchedulerPlus = require('memory-scheduler-plus')
+let MemorySchedulerPlus = require("memory-scheduler-plus");
 
 const ms = new MemorySchedulerPlus(
-  [{hours:1}, {hours:2}, {hours:3}, {hours:8}, {hours:17}],
+  [
+    { hours: 4 },
+    { hours: 8 },
+    { hours: 24 },
+    { days: 3 },
+    { days: 7 },
+    { months: 1 },
+    { months: 6 },
+    { years: 1 }
+  ],
   [-3, -1, 1]
-)
+);
+
+let record = ms.getInitialRecord("myUniqueItemId");
+
+let intConfidence = 2;
+
+record = ms.getNextRecord(intConfidence, record);
 ```
 
 ## Credits
 
-This work is based based on [Memory Scheduler](https://www.npmjs.com/package/memory-scheduler).
+This work is based on [Memory Scheduler](https://www.npmjs.com/package/memory-scheduler).
 
 ## License
 

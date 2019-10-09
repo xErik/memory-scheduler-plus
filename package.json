@@ -6,13 +6,19 @@
   "scripts": {
     "test": "node test.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xErik/memory-scheduler-plus.git"
+  },
   "keywords": [
     "memory",
     "spaced",
     "learning",
     "repetition",
     "flash",
-    "flashcards"
+    "flashcards",
+    "scheduler",
+    "schedule"
   ],
   "author": "xErik",
   "license": "MIT",

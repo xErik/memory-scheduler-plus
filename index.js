@@ -18,11 +18,11 @@ class MemorySchedulerPlus {
 
   _newRecord(uniqueId, intervalDate, intervalIndex, intervalIsMaxedOut, correctInRow) {
     return {
-      id: uniqueId, // for external read (your associated item-id)
-      intervalDate: intervalDate.toDate(), // // for external read and internal use
+      id: uniqueId, // for external usage 
+      intervalDate: intervalDate.toDate(), // // for external usage 
       intervalIndex: intervalIndex, // for internal usage
-      intervalMaxedOut: intervalIsMaxedOut, // for external read, nice to have
-      correctInRow: correctInRow // for external read, nice to have
+      intervalMaxedOut: intervalIsMaxedOut, // for external usage, nice to have
+      correctInRow: correctInRow // for external usage, nice to have
     }
   }
 
