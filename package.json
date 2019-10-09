@@ -1,0 +1,25 @@
+{
+  "name": "memory-scheduler-plus",
+  "version": "1.0.0",
+  "description": "Schedules records to facilitate memorization.",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "keywords": [
+    "memory",
+    "spaced",
+    "learning",
+    "repetition",
+    "flash",
+    "flashcards"
+  ],
+  "author": "xErik",
+  "license": "MIT",
+  "devDependencies": {
+    "chai": "^4.2.0"
+  },
+  "dependencies": {
+    "moment": "^2.24.0"
+  }
+}
